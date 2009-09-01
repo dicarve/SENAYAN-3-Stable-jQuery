@@ -221,13 +221,10 @@ class simbio_table
                 if (!$_row instanceof simbio_table_row) {
                     continue;
                 }
-                // check for row highlights
-                if ($this->highlight_row AND $_row_idx > 0) {
-                    // higlight row special attributes
-                    $_row->attr .= ' id="row'.$_record_row.'" onmouseover="highlightRow(\'row'.$_record_row.'\')" onmouseout="unHighlightRow(\'row'.$_record_row.'\')"';
-                }
+                // alternate cell class
+                $_alter = (($_record_row+1)%2 == 0)?'alterCell':'alterCell2';
                 // print out the row objects
-                $_buffer .= '<tr '.$_row->attr.'>';
+                $_buffer .= '<tr class="'.$_alter.'" '.( $_row->attr?' '.$_row->attr:'' ).'>';
                 foreach ($_row->fields as $_field_idx => $_field) {
                     if ($_row->all_cell_attr) {
                         $_field->attr = $_row->all_cell_attr;

@@ -30,7 +30,7 @@ function openCalendar(strDatefieldID) {
         calendarPop.show();
     } else {
         // inject calendar container to body
-        $(document.body).insert('<div style="width: 300px;" id="calendarPop">'
+        $(document.body).append('<div style="width: 300px;" id="calendarPop">'
             + '<div style="float: left; width: 70%">Calendar</div>'
             + '<div style="float: right; width: 20%; text-align: right;">'
             + '<a href="#" style="color: red; font-weight: bold;" onclick="calendarPop.hide()">Close</a>'
@@ -39,13 +39,13 @@ function openCalendar(strDatefieldID) {
             + '<div id="clockContainer">&nbsp;</div>'
             + '</div>');
         // positionize
-        calendarPop = $('calendarPop');
+        calendarPop = $('#calendarPop');
     }
     // date input field
-    dateField = $(strDatefieldID);
+    dateField = $('#' + strDatefieldID);
     // get date input position
-    var dateFieldPos = dateField.cumulativeOffset();
-    calendarPop.setStyle({position: 'absolute', left: (dateFieldPos.left-2)+'px', top: (dateFieldPos.top-2)+'px'});
+    var dateFieldPos = dateField.offset();
+    calendarPop.css({position: 'absolute', left: (dateFieldPos.left-2)+'px', top: (dateFieldPos.top-2)+'px'});
     // reset all time value
     day = 0; month = 0; year = 0;
     // initialize calendar
@@ -162,7 +162,7 @@ var initCalendar = function() {
     }
 
     // calendar container
-    calContainer = $('calendarContainer');
+    calContainer = $('#calendarContainer');
     var strTable = ""
 
     //heading table
@@ -236,11 +236,11 @@ var initCalendar = function() {
 
     strTable += "</tr></table>";
 
-    calContainer.update(strTable);
+    calContainer.html(strTable);
 
     if (dateType == 'datetime') {
         // clock
-        var clockContainer = $('clockContainer');
+        var clockContainer = $('#clockContainer');
         strTable = '';
         init_hour = hour;
         init_minute = minute;
@@ -250,7 +250,7 @@ var initCalendar = function() {
         strTable += '<input id="minute"  type="text" size="2" maxlength="2" onblur="this.value=formatNum2d(this.value, init_minute, \'minute\'); init_minute = this.value;" value="' + formatNum2(minute, 'minute') + '" />:';
         strTable += '<input id="second"  type="text" size="2" maxlength="2" onblur="this.value=formatNum2d(this.value, init_second, \'second\'); init_second = this.value;" value="' + formatNum2(second, 'second') + '" />';
         strTable += '</form>';
-        clockContainer.update(strTable);
+        clockContainer.html(strTable);
     }
 }
 
@@ -274,7 +274,7 @@ function returnDate(d) {
         }
     }
 
-    dateField.setValue(txt);
+    dateField.val(txt);
     // close calendar window
     calendarPop.hide();
 }

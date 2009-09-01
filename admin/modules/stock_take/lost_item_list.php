@@ -28,8 +28,8 @@ require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_element.inc.php';
-require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
-require MODULES_BASE_DIR.'reporting/report_dbgrid.inc.php';
+require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_datagrid.inc.php';
+require MODULES_BASE_DIR.'reporting/report_datagrid.inc.php';
 
 $page_title = 'Stock Take Lost Items';
 

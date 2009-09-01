@@ -26,7 +26,7 @@ require '../../../sysconfig.inc.php';
 // start the session
 require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/table/simbio_table.inc.php';
-require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/paging/simbio_paging_ajax.inc.php';
 require SIMBIO_BASE_DIR.'simbio_DB/simbio_dbop.inc.php';
 
@@ -155,11 +155,11 @@ if (isset($_POST['doExport'])) {
 <?php
 
 // create new instance
-$form = new simbio_form_table_AJAX('mainForm', $_SERVER['PHP_SELF'], 'post');
+$form = new simbio_form_table('mainForm', $_SERVER['PHP_SELF'], 'post');
 $form->submit_button_attr = 'name="doExport" value="'.lang_mod_biblio_export_form_button_start.'" class="button"';
 
 // form table attributes
-$form->table_attr = 'align="center" id="dataList" cellpadding="5" cellspacing="0"';
+$form->table_attr = 'align="center" class="dataList" cellpadding="5" cellspacing="0"';
 $form->table_header_attr = 'class="alterCell" style="font-weight: bold;"';
 $form->table_content_attr = 'class="alterCell2"';
 

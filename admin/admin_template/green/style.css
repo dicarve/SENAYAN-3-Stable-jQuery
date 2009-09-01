@@ -80,25 +80,6 @@ a {
     color: #FFFFFF;
 }
 
-#dataList {
-    width: 100%;
-    font-weight: bold;
-    border: 1px solid #999999;
-    background: #CCCCCC;
-    margin-bottom: 5px;
-}
-
-#dataList {
-    background: #CCCCCC;
-    font-weight: normal;
-    margin-bottom: 0;
-}
-
-#dataListPrinted {
-    width: 100%;
-    background-color: #000000;
-}
-
 #headerImage {
     margin-top: 5px;
     float: left;
@@ -122,6 +103,33 @@ a {
 }
 
 /* Classes definition */
+.formTable {
+    width: 100%;
+    font-weight: bold;
+    border: 1px solid #999999;
+    background: #CCCCCC;
+    margin-bottom: 5px;
+}
+
+.dataList {
+    width: 100%;
+    font-weight: bold;
+    border: 1px solid #999999;
+    background: #CCCCCC;
+    margin-bottom: 5px;
+}
+
+.dataList {
+    background: #CCCCCC;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+.dataListPrinted {
+    width: 100%;
+    background-color: #000000;
+}
+
 .loader {
     height: 29px;
     padding-top: 11px;

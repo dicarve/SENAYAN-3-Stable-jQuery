@@ -29,9 +29,9 @@ if (!defined('SENAYAN_BASE_DIR')) {
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/table/simbio_table.inc.php';
-require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/paging/simbio_paging_ajax.inc.php';
-require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_datagrid.inc.php';
 require SIMBIO_BASE_DIR.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO_BASE_DIR.'simbio_FILE/simbio_file_upload.inc.php';
 
@@ -148,7 +148,7 @@ $subquery_str = '(SELECT DISTINCT bsub.biblio_id, bsub.title, bsub.frequency_id,
 $table_spec = $subquery_str.' AS b
     LEFT JOIN mst_frequency AS fr ON b.frequency_id=fr.frequency_id';
 // set table and table header attributes
-$datagrid->table_attr = 'align="center" id="dataList" cellpadding="5" cellspacing="0"';
+$datagrid->table_attr = 'align="center" class="dataList" cellpadding="5" cellspacing="0"';
 $datagrid->table_header_attr = 'class="dataListHeader" style="font-weight: bold;"';
 // put the result into variables
 $datagrid_result = $datagrid->createDataGrid($dbs, $table_spec, 20, false);

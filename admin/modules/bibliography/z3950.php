@@ -225,7 +225,7 @@ if (isset($_POST['saveZ']) AND isset($_SESSION['z3950result'])) {
     // destroy result Z3950 session
     unset($_SESSION['z3950result']);
     utility::jsAlert($r.' records inserted to database.');
-    echo '<script type="text/javascript">parent.setContent(\'mainContent\', \''.$_SERVER['PHP_SELF'].'\', \'get\');</script>';
+    echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'\', \'get\');</script>';
     exit();
 }
 /* RECORD OPERATION END */
@@ -291,7 +291,7 @@ if (isset($_GET['keywords']) AND $can_read) {
             $_SESSION['z3950result'] = $xmlrec;
             // create list and form
             echo '<form method="post" action="'.MODULES_WEB_ROOT_DIR.'bibliography/z3950.php" target="blindSubmit">';
-            echo '<table align="center" id="dataList" cellpadding="5" cellspacing="0">';
+            echo '<table align="center" class="dataList" cellpadding="5" cellspacing="0">';
             echo '<tr>';
             echo '<td colspan="3"><input type="submit" name="saveZ" value="Save Z3950 Records to Database" /></td>';
             echo '</tr>';

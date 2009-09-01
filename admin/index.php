@@ -2,7 +2,7 @@
 /**
  * SENAYAN admin application bootstrap files
  *
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,9 @@
 
 // required file
 require '../sysconfig.inc.php';
-// start the session
-require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
 // session checking
-require './default/session_check.inc.php';
+require SENAYAN_BASE_DIR.'admin/default/session.inc.php';
+require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/template_parser/simbio_template_parser.inc.php';
 require LIB_DIR.'module.inc.php';
 
@@ -58,19 +57,10 @@ $sub_menu = $module->generateSubMenu(($current_module AND $can_read)?$current_mo
 ob_start();
 // info
 $info = lang_sys_common_welcome.' <strong>'.$_SESSION['realname'].'</strong>';
-// set some javascript vars
-echo '<script type="text/javascript">';
-echo 'lastStr = \''.addslashes($info).'\';';
-if ($current_module) {
-    echo 'defaultAJAXurl = \''.MODULES_WEB_ROOT_DIR.$current_module.'/index.php\';';
-} else {
-    echo 'defaultAJAXurl = \''.SENAYAN_WEB_ROOT_DIR.'admin/default/home.php\';';
-}
-echo '</script>';
 
 if ($current_module AND $can_read) {
     // get content of module default content with AJAX
-    echo '<script type="text/javascript">setContent(\'mainContent\', \''.MODULES_WEB_ROOT_DIR.$current_module.'/index.php\', \'post\');</script>';
+    echo '<script type="text/javascript">$(\'#mainContent\').simbioAJAX(\''.MODULES_WEB_ROOT_DIR.$current_module.'/index.php\');</script>';
 } else {
     include 'default/home.php';
 }

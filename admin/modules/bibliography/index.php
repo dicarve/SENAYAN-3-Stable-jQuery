@@ -29,9 +29,9 @@ if (!defined('SENAYAN_BASE_DIR')) {
 
 require SENAYAN_BASE_DIR.'admin/default/session_check.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/table/simbio_table.inc.php';
-require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_table.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/paging/simbio_paging_ajax.inc.php';
-require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_datagrid.inc.php';
 require SIMBIO_BASE_DIR.'simbio_DB/simbio_dbop.inc.php';
 require SIMBIO_BASE_DIR.'simbio_FILE/simbio_file_upload.inc.php';
 
@@ -156,7 +156,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                     echo '<script type="text/javascript">parent.opener.setContent(\'mainContent\', parent.opener.getLatestAJAXurl(), \'post\', \''.( $itemCollID?'itemID='.$itemCollID.'&detail=true':'' ).'\');</script>';
                     echo '<script type="text/javascript">parent.window.close();</script>';
                 } else {
-                    echo '<script type="text/javascript">parent.setContent(\'mainContent\', parent.getPreviousAJAXurl(), \'get\');</script>';
+                    echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(parent.getPreviousAJAXurl(), \'get\');</script>';
                 }
             } else { utility::jsAlert(lang_mod_biblio_alert_failed_to_update."\n".$sql_op->error); }
             exit();
@@ -192,7 +192,7 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
                 $_SESSION['biblioAuthor'] = array();
                 $_SESSION['biblioTopic'] = array();
                 $_SESSION['biblioAttach'] = array();
-                echo '<script type="text/javascript">parent.setContent(\'mainContent\', \''.MODULES_WEB_ROOT_DIR.'bibliography/index.php\', \'post\', \'itemID='.$last_biblio_id.'&detail=true\');</script>';
+                echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.MODULES_WEB_ROOT_DIR.'bibliography/index.php\', \'post\', \'itemID='.$last_biblio_id.'&detail=true\');</script>';
             } else { utility::jsAlert(lang_mod_biblio_alert_failed_to_save."\n".$sql_op->error); }
             exit();
         }
@@ -243,16 +243,16 @@ if (isset($_POST['saveData']) AND $can_read AND $can_write) {
             $titles .= $title."\n";
         }
         utility::jsAlert(lang_mod_biblio_alert_list_not_deleted."\n".$titles);
-        echo '<script type="text/javascript">parent.setContent(\'mainContent\', \''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\', \'post\');</script>';
+        echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
         exit();
     }
     // error alerting
     if ($error_num == 0) {
         utility::jsAlert(lang_mod_biblio_alert_data_selected_deleted);
-        echo '<script type="text/javascript">parent.setContent(\'mainContent\', \''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\', \'post\');</script>';
+        echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     } else {
         utility::jsAlert(lang_mod_biblio_alert_data_selected_not_deleted);
-        echo '<script type="text/javascript">parent.setContent(\'mainContent\', \''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\', \'post\');</script>';
+        echo '<script type="text/javascript">parent.$(\'#mainContent\').simbioAJAX(\''.$_SERVER['PHP_SELF'].'?'.$_POST['lastQueryStr'].'\');</script>';
     }
     exit();
 }
@@ -263,13 +263,13 @@ if (!$in_pop_up) {
 ?>
 <fieldset class="menuBox">
 <div class="menuBoxInner biblioIcon">
-    <?php echo strtoupper(lang_mod_biblio); ?> - <a href="#" onclick="setContent('mainContent', '<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php?action=detail', 'get');" class="headerText2"><?php echo lang_mod_biblio_add; ?></a>
-    &nbsp; <a href="#" onclick="setContent('mainContent', '<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php', 'post');" class="headerText2"><?php echo lang_mod_biblio_list; ?></a>
+    <?php echo strtoupper(lang_mod_biblio); ?> - <a href="<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php?action=detail" class="ajaxLink"><?php echo lang_mod_biblio_add; ?></a>
+    &nbsp; <a href="<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php" class="ajaxLink"><?php echo lang_mod_biblio_list; ?></a>
     <hr />
-    <form name="search" action="blank.html" target="blindSubmit" onsubmit="$('doSearch').click();" id="search" method="get" style="display: inline;"><?php echo lang_sys_common_form_search; ?> :
+    <form name="search" id="ajaxSearchForm" action="<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php" method="get" style="display: inline;"><?php echo lang_sys_common_form_search; ?> :
     <input type="text" name="keywords" id="keywords" size="30" />
     <select name="field"><option value="0"><?php echo lang_mod_biblio_field_opt_all; ?></option><option value="title"><?php echo lang_mod_biblio_field_opt_title; ?> </option><option value="subject"><?php echo lang_mod_biblio_field_opt_subject; ?></option><option value="author"><?php echo lang_mod_biblio_field_opt_author; ?></option><option value="isbn"><?php echo lang_mod_biblio_field_opt_isbn; ?></option><option value="publisher"><?php echo lang_mod_biblio_field_opt_publisher; ?></option></select>
-    <input type="button" id="doSearch" onclick="setContent('mainContent', '<?php echo MODULES_WEB_ROOT_DIR; ?>bibliography/index.php?' + $('search').serialize(), 'post')" value="<?php echo lang_sys_common_form_search; ?>" class="button" />
+    <input type="submit" value="<?php echo lang_sys_common_form_search; ?>" class="button" />
     </form>
 </div>
 </fieldset>
@@ -295,10 +295,10 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
     $rec_d = $rec_q->fetch_assoc();
 
     // create new instance
-    $form = new simbio_form_table_AJAX('mainForm', $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'], 'post');
+    $form = new simbio_form_table('mainForm', $_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'], 'post');
     $form->submit_button_attr = 'name="saveData" value="'.lang_sys_common_form_save.'" class="button"';
     // form table attributes
-    $form->table_attr = 'align="center" id="dataList" cellpadding="5" cellspacing="0"';
+    $form->table_attr = 'align="center" class="formTable" cellpadding="5" cellspacing="0"';
     $form->table_header_attr = 'class="alterCell" style="font-weight: bold;"';
     $form->table_content_attr = 'class="alterCell2"';
 
@@ -554,7 +554,7 @@ if (isset($_POST['detail']) OR (isset($_GET['action']) AND $_GET['action'] == 'd
     $datagrid->sql_group_by = 'biblio.biblio_id';
 
     // set table and table header attributes
-    $datagrid->table_attr = 'align="center" id="dataList" cellpadding="5" cellspacing="0"';
+    $datagrid->table_attr = 'align="center" class="dataList" cellpadding="5" cellspacing="0"';
     $datagrid->table_header_attr = 'class="dataListHeader" style="font-weight: bold;"';
     // set delete proccess URL
     $datagrid->chbox_form_URL = $_SERVER['PHP_SELF'];

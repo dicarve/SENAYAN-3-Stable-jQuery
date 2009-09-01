@@ -1,285 +1,198 @@
 /**
-* Arie Nugraha 2009
-* this file need prototype. js
-* library to works
-*
-* UI related functions
-*/
+ * Arie Nugraha 2009
+ * Simbio GUI related functions
+ *
+ * Require : jQuery library
+ */
 
-/* change the style of submenu link */
-var setSubmenuClass = function(strMenuID, strClassName)
-{
-    var elementObj = $(strMenuID);
-    // get other element that already have name 'strClassName'
-    var prevElemnts = $$('.' + strClassName);
-    // iterate
-    prevElemnts.each(function(elmnt) {
-        elmnt.removeClassName(strClassName);
+
+/**
+ * jQuery Plugins function to set row event on datagrid table
+ *
+ * @param       object      an additional option for table
+ * @return      jQuery
+ *
+ * @example usage
+ * $('.datagrid').simbioTable();
+ * or
+ * $('.datagrid').simbioTable({ mouseoverCol: '#bcd4ec', highlightCol: 'yellow' });
+ */
+jQuery.fn.simbioTable = function(params) {
+    // set some options
+    options = {
+        mouseoverCol: '#9fff81',
+        highlightCol: 'yellow'
+    };
+    jQuery.extend(options, params);
+    // add non-standar 'row' attribute to indicate row position
+    jQuery(this).find('tr').each(function(i) {
+            jQuery(this).attr('row', i);
         });
 
-    // add class name specified in function argument
-    elementObj.addClassName(strClassName);
+    // event register
+    jQuery(this).find('tr').mouseover(function() {
+        // on mouse over change background color
+        if (!this.highlighted) {
+            this.originColor = jQuery(this).css('background-color');
+            jQuery(this).css({background : options.mouseoverCol});
+        }
+    }).mouseout(function() {
+        // on mouse over revert background color to original
+        if (!this.highlighted) {
+            jQuery(this).css('background-color', this.originColor);
+        }
+    }).click(function(evt) {
+        if (!this.originColor) {
+            this.originColor = jQuery(this).css('background-color');
+        }
+        // on click highlight row with new background color
+        if (this.highlighted) {
+            this.highlighted = false;
+            jQuery(this).removeClass('highlighted').removeClass('last-highlighted').css('background-color', this.originColor);
+            // uncheck the checkbox on row if exists
+            jQuery(this).find('input:checkbox').each(function() {
+                this.checked = false;
+            });
+        } else {
+            // set highlighted flag
+            this.highlighted = true;
+            // check the checkbox on row if exists
+            jQuery(this).find('input:checkbox').each(function() {
+                this.checked = true;
+            });
+
+            // get parent table of row
+            var parentTable = jQuery( jQuery(this).parents('table')[0] );
+
+            // get last highlighted row index
+            var lastRow = parseInt(parentTable.find('.last-highlighted').attr('row'));
+            // get current row index
+            var currentRow = parseInt(jQuery(this).attr('row'));
+
+            if (evt.shiftKey) {
+                var start = Math.min(currentRow, lastRow);
+                var end = Math.max(currentRow, lastRow);
+                for (var r = start+1; r <= end-1; r++) {
+                    parentTable.find('tr[row=' + r + ']').trigger('click');
+                }
+            }
+
+            // remove all last-highlighted row class
+            parentTable.find('.last-highlighted').removeClass('last-highlighted');
+            // highlight current clicked row
+            jQuery(this).addClass('highlighted').addClass('last-highlighted').css('background-color', options.highlightCol);
+
+        }
+    });
+
+    return jQuery(this);
+};
+
+
+/**
+ * jQuery Plugins function to make dynamic addition form field
+ *
+ *
+ * @return      jQuery
+ */
+jQuery.fn.dynamicField = function() {
+    var dynFieldClass = this.attr('class');
+    this.find('.add').click(function() {
+        // get div parent element
+        var currentField = jQuery(this).parent();
+        var addField = currentField.clone();
+        // append remove button and remove ".add" button for additional field
+        addField.append(' <a href="#" class="remove-field">Remove</a>').children().remove('.add');
+        // add cloned field after
+        currentField.after(addField[0]);
+        // register event for remove button
+        jQuery(document).ready(function() {
+            $('.remove-field', this).click(function() {
+                // remove field
+                var toRemove = jQuery(this).parent().remove();
+            });
+        });
+    });
+
+    return jQuery(this);
 }
 
-/* change the style of circulation tab */
-var setTabClass = function(objTab)
-{
-    var defaultClass = 'tab';
-    var tabSelectedClass = 'tabSelected';
-    // remove selected class from other tabs
-    $('mainContent').select('input.tab').invoke('removeClassName', tabSelectedClass);
-    // add class to current tab object
-    $(objTab).addClassName(tabSelectedClass);
-}
 
-/* color of highlighted row */
-var strRowColor = '#64ff64';
-/* color of highlighted row based on checkbox */
-var strRowSelColor = '#ffb865';
-/* extending prototype's Element methods */
-Element.addMethods({
-    changeCellColor: function(element) {
-        element = $(element);
-        if (element.hasClassName('cbChecked')) return;
-        element.setStyle({backgroundColor: strRowColor});
-        return element;
+/**
+ * Add some utilities function to jQuery namespace
+ */
+jQuery.extend({
+    unCheckAll: function(strSelector) {
+        jQuery(strSelector).find('tr').each(function() {
+            if ($(this).hasClass('highlighted')) {
+                $(this).trigger('click');
+            }
+        });
     },
-
-    removeCellColor: function(element) {
-        element = $(element);
-        if (element.hasClassName('cbChecked')) return;
-        // reset the background color property
-        element.setStyle({ backgroundColor: '' });
-        return element;
+    checkAll: function(strSelector) {
+        jQuery(strSelector).find('tr').each(function() {
+            if (!$(this).hasClass('highlighted')) {
+                $(this).trigger('click');
+            }
+        });
     }
 });
 
-/* highlight the selected row */
-var highlightRow = function(strRowID)
+
+/**
+ * function to simbio table
+ */
+function registerSimbioTable()
 {
-    // get the descendants TD of row
-    $(strRowID).select('td').invoke('changeCellColor');
-}
-
-/* unhighlight the selected row */
-var unHighlightRow = function(strRowID)
-{
-    // get the descendants TD of row
-    $(strRowID).select('td').invoke('removeCellColor');
-}
-
-/* highlight the selected row based on checkbox */
-var firstChecked = 0;
-var secondChecked = 0;
-var cbHighlightRow = function(cbObj, strRowID, event)
-{
-    // color buffer
-    var clr = '';
-    // check is the checkbox is in checked state
-    isChecked = cbObj.checked;
-    // get the descendants TD of row
-    var descTD = $(strRowID).select('td');
-
-    if (isChecked) {
-        clr = strRowSelColor;
-        var isShift = event.shiftKey;
-        // get cbObj id string
-        var idStr = $(cbObj).readAttribute('id');
-        // get number from idStr
-        var chboxNum = idStr.replace(/[a-z]+/i, '');
-        chboxNum = parseInt(chboxNum);
-        if (!isShift) {
-            firstChecked = chboxNum;
-        } else {
-            if (firstChecked > 0) {
-                secondChecked = chboxNum;
-            }
-        }
-        // check if shift key is pressed
-        if (isShift && (firstChecked > 0) && (secondChecked > 0)) {
-            var start = Math.min(firstChecked, secondChecked);
-            var end = Math.max(firstChecked, secondChecked);
-            for (c = start+1; c <= end-1; c++) {
-                $('cbRow' + c).click();
-            }
-            // reset
-            firstChecked = 0; secondChecked = 0;
-        }
-        // set style for each of TD
-        descTD.invoke('addClassName', 'cbChecked').invoke('setStyle', {backgroundColor: clr});
-    } else {
-        // set style for each of TD
-        descTD.invoke('removeClassName', 'cbChecked').invoke('setStyle', {backgroundColor: ''});
-    }
-}
-
-/* Javasript function to open new window  */
-var openWin = function(strURL, strWinName, intWidth, intHeight, boolScroll)
-{
-    // variables to determine the center position of window
-    var xPos = (screen.width - intWidth)/2;
-    var yPos = (screen.height - intHeight)/2;
-
-    var withScrollbar = 'no';
-
-    // if scrollbar allowed
-    if (boolScroll) {
-        withScrollbar = 'yes';
-    }
-
-    window.open(strURL, strWinName, "height=" + intHeight + ",width=" + intWidth +
-    ",menubar=no, scrollbars=" + withScrollbar + ", location=no, toolbar=no," +
-    "directories=no,resizable=no,screenY=" + yPos + ",screenX=" + xPos + ",top=" + yPos + ",left=" + xPos);
-}
-
-/* Javasript function to open pop-up window floating div  */
-var htmlPop = null;
-var blocker = null;
-var openHTMLpop = function(strURL, intWidth, intHeight, strPopTitle)
-{
-    // variables to determine the center position of window
-    var xPos = (screen.width - intWidth)/2;
-    var yPos = ((screen.height - intHeight)/2)/2;
-
-    htmlPop = $('htmlPop');
-    $(document.body).insert('<div id="blocker"></div>'
-        + '<div id="htmlPop">'
-        + '<div id="htmlPopTitle" style="float: left; width: 70%">' + strPopTitle + '</div>'
-        + '<div style="float: right; width: 20%; text-align: right;">'
-        + '<a href="#" style="color: red; font-weight: bold;" onclick="closeHTMLpop()">Close</a>'
-        + '</div>'
-        + '<iframe id="htmlPopFrame" src="' + strURL + '" frameborder="0"></iframe>'
-        + '</div>');
-    blocker = $('blocker');
-    htmlPop = $('htmlPop');
-    htmlPopFrame = $('htmlPopFrame');
-    // set pop up styles property
-    htmlPopFrame.setStyle({height: intHeight+'px'});
-    htmlPop.setStyle({top: yPos+'px', left: xPos+'px', width: intWidth+'px', position: 'fixed', opacity: 0.9, display: 'block'});
-    blocker.setStyle({top: 0, left: 0, width: '100%', height: screen.height+'px', position: 'fixed', backgroundColor: '#000', opacity: 0.3, display: 'block'});
-    // register ESC button event handler
-    top.Event.observe(document.body, 'keypress', function(event) {
-        if (event.which == 0) { closeHTMLpop(); }
-    });
-}
-
-var closeHTMLpop = function()
-{
-    // stop observing
-    top.Event.stopObserving(document.body, 'keypress', function(event) {});
-    htmlPop.remove();
-    blocker.remove();
-}
-
-/* set iframe content */
-var setIframeContent = function(strIframeID, strUrl)
-{
-    var iframeObj = $(strIframeID);
-    if (iframeObj != undefined) {
-        iframeObj.src = strUrl;
-    }
-}
-
-/* register event for dragger */
-/* coding all night just to get this thing works :D */
-var resizedObj = new Object();
-var dragger = new Object();
-var resizedObjHeight = 0;
-var offSet = 0;
-var evtHandler = {
-    mouseMove: function(evt) {
-        resizedObj.setStyle( {height: Math.max(100, offSet + Event.pointerY(evt)) + 'px'} );
-        return false;
-    }
-}
-
-var registerDraggerEvent = function(str_dragger_id, str_resized_obj_id)
-{
-    resizedObj = $(str_resized_obj_id);
-    dragger = $(str_dragger_id);
-    Event.observe(dragger, 'mousedown', function(evt) {
-        offSet = resizedObj.getHeight()-Event.pointerY(evt);
-        mouseMoveHandler = evtHandler.mouseMove.bindAsEventListener(evtHandler);
-        // register the mouse up event handler
-        Event.observe(dragger, 'mouseup', function() {
-            // unregister mouse move event handler
-            Event.stopObserving(dragger, 'mousemove', mouseMoveHandler);
+    /* Datagrid */
+    var datagrids = $('.dataList');
+    if (datagrids.length > 0) {
+        // datagrid row highlighter
+        datagrids.simbioTable();
+        // register uncheck click event
+        $('.uncheck-all').click(function() {
+            jQuery.unCheckAll(datagrids);
         });
-        // register the mouse out event handler
-        Event.observe(dragger, 'mouseout', function() {
-            // unregister mouse move event handler
-            Event.stopObserving(dragger, 'mousemove', mouseMoveHandler);
+        // register check click event
+        $('.check-all').click(function() {
+            jQuery.checkAll(datagrids);
         });
-        // register the mouse move event handler
-        Event.observe(dragger, 'mousemove', mouseMoveHandler);
-    });
-}
-
-var iframes = [];
-/* remove iframe content blocker */
-var removeBlockers = function()
-{
-    // get all iframe in document
-    iframes.each(function(iframeObj) {
-        if (iframeObj) {
-            var iframeURL = iframeObj.src;
-            // replace block query param
-            iframeURL = iframeURL.sub(/\&block=[^\&]+/, '');
-            iframeObj.src = iframeURL;
-        }
-    });
-}
-
-/* blocked iframes registerer */
-var registerBlockedIframes = function(arr_iframe_id)
-{
-    arr_iframe_id.each(function(str_iframe_id) {
-        var iframeObj = $(str_iframe_id);
-        if (iframeObj) {
-            var iframesNum = iframes.length;
-            if (iframesNum < 1) {
-                iframes[0] = iframeObj;
-            } else { iframes[iframes.length] = iframeObj; }
-            // block iframes
-            iframeObj.src = iframeObj.src + '&block=true';
-        }
-    });
-}
-
-/* hide table rows */
-var hiddenTables = new Array();
-var hideRows = function(str_table_id, int_start_row)
-{
-    var rows = $(str_table_id).select('.divRow');
-    var skip = 0;
-    rows.each(function(row_obj) {
-        if (skip < int_start_row) {
-            skip++;
-            return;
-        } else {
-            row_obj.setStyle({display: 'none'});
-        }
-    });
-    // add table id to hidden table array
-    hiddenTables.push(str_table_id);
-}
-
-/* show table rows */
-var showRows = function(str_table_id)
-{
-    var rows = $(str_table_id).select('.divRow').invoke('setStyle', {display: 'block'});
-}
-
-/* toogle show/hide table rows */
-var showHideTableRows = function(str_table_id, int_start_row, obj_button, str_hide_text, str_show_text)
-{
-    obj_button = $(obj_button);
-    if (hiddenTables.include(str_table_id)) {
-        showRows(str_table_id);
-        hiddenTables = hiddenTables.without(str_table_id);
-        obj_button.setValue(str_show_text);
-    } else {
-        hideRows(str_table_id, int_start_row);
-        obj_button.setValue(str_hide_text)
     }
 }
+
+/**
+ * function to register module submenu
+ */
+function registerSubMenus()
+{
+    /* Module submenu */
+    var subMenus = $('a.subMenuItem');
+    subMenus.click(function(evt) {
+        // prevent default event
+        evt.preventDefault();
+        var url = this.href;
+        // set class for this menu
+        subMenus.removeClass('curModuleLink');
+        $(this).addClass('curModuleLink');
+        // load AJAX content
+        $('#mainContent').simbioAJAX(url);
+    });
+}
+
+/**
+ * function to register AJAX search form
+ */
+function registerAJAXform()
+{
+    var formAJAX = $('#ajaxSearchForm');
+    formAJAX.submit(function(evt) {
+        evt.preventDefault();
+        var filters = formAJAX.find('input,select').serialize();
+        $('#mainContent').simbioAJAX(this.action, { addData: filters });
+    });
+}
+
+/**
+ * Event handler
+ */
+$(document).ready(registerSubMenus);

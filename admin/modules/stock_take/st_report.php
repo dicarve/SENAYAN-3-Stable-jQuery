@@ -63,7 +63,7 @@ if ($stk_query->num_rows < 1) {
 <?php
     }
     $table = new simbio_table();
-    $table->table_attr = 'align="center" id="dataList" cellpadding="3" cellspacing="0"';
+    $table->table_attr = 'align="center" class="dataList" cellpadding="3" cellspacing="0"';
     // make an array for report table row
     $report_row[lang_mod_stocktake_init_field_name] = $stk_data['stock_take_name'];
     $report_row[lang_mod_stocktake_total] = $stk_data['total_item_stock_taked'];

@@ -104,14 +104,14 @@ class simbio_form_table extends simbio_form_maker
 
         // check if we are on edit form mode
         if ($this->edit_mode) {
-            $_edit_link .= '<a href="#" onclick="enableForm(\''.$this->form_name.'\'); enableForm(\'deleteForm\');" style="font-weight: bold;" class="editFormLink">EDIT</a>';
+            $_edit_link .= '<a href="#" style="font-weight: bold;" class="editFormLink">EDIT</a>';
             // delete button exists if the record_id exists
             if ($this->record_id && $this->delete_button) {
-                $_delete_button = '<input type="button" value="'.$_del_value.'" class="button" onclick="confSubmit(\'deleteForm\', \'Are you sure to delete '.addslashes($this->record_title).'?\nOnce Deleted it cant be restored again\')" style="color: red; font-weight: bold;" />';
+                $_delete_button = '<input type="button" value="'.$_del_value.'" class="button confirmDelete" style="color: red; font-weight: bold;" />';
             }
             // back button
             if ($this->back_button) {
-                $_back_button = '<input type="button" class="cancelButton button" value="'.$_cancel_value.'" onclick="javascript: self.history.back();" />';
+                $_back_button = '<input type="button" class="button cancelButton" value="'.$_cancel_value.'" />';
             }
         }
 
@@ -144,9 +144,15 @@ class simbio_form_table extends simbio_form_maker
         if ($this->edit_mode) {
             // hidden form for deleting records
             $_buffer .= '<form action="'.$this->form_action.'" id="deleteForm" method="post" style="display: inline;"><input type="hidden" name="itemID" value="'.$this->record_id.'" /><input type="hidden" name="itemAction" value="true" /></form>';
-            // disabling form
-            $_buffer .= '<script type="text/javascript">disableForm(\''.$this->form_name.'\');disableForm(\'deleteForm\');</script>';
         }
+
+        if ($this->submit_target != '_self') {
+            // for debugging purpose only
+            // $_buffer .= '<iframe name="'.$this->submit_target.'" style="visibility: visible; width: 100%; height: 200px;"></iframe>';
+            // hidden iframe for form executing
+            $_buffer .= '<iframe name="'.$this->submit_target.'" style="visibility: hidden; width: 100%; height: 0;"></iframe>';
+        }
+
         // output
         return $_buffer;
     }

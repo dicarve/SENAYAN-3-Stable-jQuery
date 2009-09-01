@@ -51,7 +51,7 @@ if (isset($_POST['finish'])) {
         // send message
         echo '<script type="text/javascript">';
         echo 'alert(\''.lang_mod_circ_common_finished_loan_confirmation.'\');';
-        echo 'parent.setContent(\'mainContent\', \''.MODULES_WEB_ROOT_DIR.'circulation/index.php\', \'post\', \'finishID='.$memberID.'\');';
+        echo 'parent.$(\'#mainContent\').simbioAJAX(\''.MODULES_WEB_ROOT_DIR.'circulation/index.php\', \'post\', \'finishID='.$memberID.'\');';
         echo '</script>';
     }
     exit();

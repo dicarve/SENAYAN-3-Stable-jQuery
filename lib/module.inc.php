@@ -99,7 +99,7 @@ class module extends simbio
             } else {
                 $_list_ID = str_replace(' ', '_', (strtolower($_list[0])));
                 $_submenu .= '<a class="subMenuItem" id="'.$_list_ID.'"'
-                    .' onclick="setSubmenuClass(\''.$_list_ID.'\', \'curModuleLink\'); setContent(\'mainContent\', \''.$_list[1].'\', \'get\');"'
+                    .' href="'.$_list[1].'"'
                     .' title="'.( isset($_list[2])?$_list[2]:$_list[0] ).'" href="#">'.$_list[0].'</a>';
             }
         }

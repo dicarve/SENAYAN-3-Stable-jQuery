@@ -38,8 +38,8 @@ require SIMBIO_BASE_DIR.'simbio_GUI/template_parser/simbio_template_parser.inc.p
 require SIMBIO_BASE_DIR.'simbio_GUI/table/simbio_table.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/paging/simbio_paging.inc.php';
 require SIMBIO_BASE_DIR.'simbio_GUI/form_maker/simbio_form_element.inc.php';
-require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_dbgrid.inc.php';
-require MODULES_BASE_DIR.'reporting/report_dbgrid.inc.php';
+require SIMBIO_BASE_DIR.'simbio_DB/datagrid/simbio_datagrid.inc.php';
+require MODULES_BASE_DIR.'reporting/report_datagrid.inc.php';
 
 $page_title = 'Members Report';
 $reportView = false;

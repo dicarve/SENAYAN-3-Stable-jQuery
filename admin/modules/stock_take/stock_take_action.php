@@ -78,7 +78,7 @@ if (isset($_POST['itemCode'])) {
             $update = $dbs->query("UPDATE stock_take_item SET status='e', checked_by='".$_SESSION['realname']."', last_update='".$curr_time."' WHERE item_code='$item_code'");
             $update = $dbs->query("UPDATE stock_take SET total_item_lost=total_item_lost-1 WHERE is_active=1");
             echo '<script type="text/javascript">'."\n";
-            echo 'parent.setContent(\'mainContent\', \''.MODULES_WEB_ROOT_DIR.'stock_take/current.php?listShow='.$listShow.'\', \'get\');'."\n";
+            echo 'parent.$(\'#mainContent\').simbioAJAX(\''.MODULES_WEB_ROOT_DIR.'stock_take/current.php?listShow='.$listShow.'\', \'get\');'."\n";
             echo '</script>';
         }
     } else {

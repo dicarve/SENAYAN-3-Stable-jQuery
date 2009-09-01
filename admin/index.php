@@ -56,7 +56,20 @@ $sub_menu = $module->generateSubMenu(($current_module AND $can_read)?$current_mo
 // start the output buffering for main content
 ob_start();
 // info
+<<<<<<< HEAD:admin/index.php
 $info = lang_sys_common_welcome.' <strong>'.$_SESSION['realname'].'</strong>';
+=======
+$info = __('Welcome To The Library Automation System, you are currently logged in as').' <strong>'.$_SESSION['realname'].'</strong>'; //mfc
+// set some javascript vars
+echo '<script type="text/javascript">';
+echo 'lastStr = \''.addslashes($info).'\';';
+if ($current_module) {
+    echo 'defaultAJAXurl = \''.MODULES_WEB_ROOT_DIR.$current_module.'/index.php\';';
+} else {
+    echo 'defaultAJAXurl = \''.SENAYAN_WEB_ROOT_DIR.'admin/default/home.php\';';
+}
+echo '</script>';
+>>>>>>> e9102aa04b34e50a9748a310e0540dbb3063263e:admin/index.php
 
 if ($current_module AND $can_read) {
     // get content of module default content with AJAX

@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 ob_start();
 $table = new simbio_table();
 $table->table_attr = 'align="center" class="detailTable" style="width: 100%;" cellpadding="2" cellspacing="0"';
-$table->setHeader(array(lang_sys_conf_group_privileges_modul_name, lang_sys_conf_group_privileges_modul_read, lang_sys_conf_group_privileges_modul_write));
+$table->setHeader(array(__('Module Name'), __('Read'), __('Write')));
 $table->table_header_attr = 'class="dataListHeader" style="font-weight: bold;"';
 
 // initial row count

@@ -3,7 +3,7 @@
  * simbio_form_table
  * Class for creating form with HTML table layout
  *
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,16 +91,8 @@ class simbio_form_table extends simbio_form_maker
         $_edit_link = '';
         $_delete_button = '';
         $_back_button = '';
-        if (defined('lang_sys_common_form_delete')) {
-            $_del_value = lang_sys_common_form_delete;
-        } else {
-            $_del_value = 'Delete Record';
-        }
-        if (defined('lang_sys_common_form_cancel')) {
-            $_cancel_value = lang_sys_common_form_cancel;
-        } else {
-            $_cancel_value = 'Cancel';
-        }
+        $_del_value = __('Delete Record');
+        $_cancel_value = __('Cancel');
 
         // check if we are on edit form mode
         if ($this->edit_mode) {

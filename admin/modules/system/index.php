@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,12 +40,12 @@ $can_write = utility::havePrivilege('system', 'w');
 
 // only administrator have privileges to change global settings
 if (!($can_read AND $can_write) OR $_SESSION['uid'] != 1) {
-    die('<div class="errorBox">'.lang_sys_common_no_privilege.'</div>');
+    die('<div class="errorBox">'.__('You don\'t have enough privileges to view this section').'</div>');
 }
 ?>
 <fieldset class="menuBox">
     <div class="menuBoxInner systemIcon">
-        <?php echo strtoupper(lang_sys_configuration).'<hr />'.lang_sys_configuration_description; ?>
+        <?php echo strtoupper(__('System Configuration')).'<hr />'.__('Modify global application preferences'); ?>
     </div>
 </fieldset>
 <?php
@@ -112,14 +112,19 @@ if (isset($_POST['updateData'])) {
 
     // write log
     utility::writeLogs($dbs, 'staff', $_SESSION['uid'], 'system', $_SESSION['realname'].' change application global configuration');
-    utility::jsAlert(lang_sys_conf_alert_save);
+    utility::jsAlert(__('Settings saved. Refreshing page'));
     echo '<script type="text/javascript">parent.location.href = \'../../index.php?mod=system\';</script>';
 }
 /* Config Vars update process end */
 
 // create new instance
+<<<<<<< HEAD:admin/modules/system/index.php
 $form = new simbio_form_table('mainForm', $_SERVER['PHP_SELF'], 'post');
 $form->submit_button_attr = 'name="updateData" value="'.lang_sys_conf_form_button_save.'" class="button"';
+=======
+$form = new simbio_form_table('mainForm', $_SERVER['PHP_SELF'], 'post');
+$form->submit_button_attr = 'name="updateData" value="'.__('Save Settings').'" class="button"';
+>>>>>>> e9102aa04b34e50a9748a310e0540dbb3063263e:admin/modules/system/index.php
 
 // form table attributes
 $form->table_attr = 'align="center" class="formTable" cellpadding="5" cellspacing="0"';
@@ -133,10 +138,10 @@ utility::loadSettings($dbs);
 $form->addAnything('Senayan Version', '<strong>'.SENAYAN_VERSION.'</strong>');
 
 // library name
-$form->addTextField('text', 'library_name', lang_sys_conf_form_field_library, $sysconf['library_name'], 'style="width: 100%;"');
+$form->addTextField('text', 'library_name', __('Library Name'), $sysconf['library_name'], 'style="width: 100%;"');
 
 // library subname
-$form->addTextField('text', 'library_subname', lang_sys_conf_form_field_library_subname, $sysconf['library_subname'], 'style="width: 100%;"');
+$form->addTextField('text', 'library_subname', __('Library Subname'), $sysconf['library_subname'], 'style="width: 100%;"');
 
 /* Form Element(s) */
 // public template
@@ -150,7 +155,7 @@ ksort($dir_tree);
 foreach ($dir_tree as $dir) {
     $tpl_options[] = array($dir, $dir);
 }
-$form->addSelectList('template', lang_sys_conf_form_field_public_template, $tpl_options, $sysconf['template']['theme']);
+$form->addSelectList('template', __('Public Template'), $tpl_options, $sysconf['template']['theme']);
 
 // admin template
 // scan admin template directory
@@ -163,25 +168,12 @@ ksort($dir_tree);
 foreach ($dir_tree as $dir) {
     $admin_tpl_options[] = array($dir, $dir);
 }
-$form->addSelectList('admin_template', lang_sys_conf_form_field_admin_template, $admin_tpl_options, $sysconf['admin_template']['theme']);
+$form->addSelectList('admin_template', __('Admin Template'), $admin_tpl_options, $sysconf['admin_template']['theme']);
 
 // application language
-// scan language directory
-$lang_dir = LIB_DIR.'lang';
-$scan_dir = opendir($lang_dir);
-// check if the directory is successfully open
-if ($scan_dir) {
-    // loop the directory content
-    while (false !== ($filename = @readdir($scan_dir))) {
-        if (is_file($lang_dir.DIRECTORY_SEPARATOR.$filename) AND $filename != '.' AND $filename != '..') {
-            $lang = str_ireplace('.lang.inc.php', '', $filename);
-            $lang_options[] = array($lang, ucfirst($lang));
-        }
-    }
-} else {
-    $lang_options[] = array('english', 'English');
-}
-$form->addSelectList('default_lang', lang_sys_conf_form_field_language, $lang_options, $sysconf['default_lang']);
+require_once(LANGUAGES_BASE_DIR.'localisation.php');
+$lang_options = $available_languages;
+$form->addSelectList('default_lang', __('Default App. Language'), $lang_options, $sysconf['default_lang']);
 
 // opac result list number
 $result_num_options[] = array('10', '10');
@@ -189,44 +181,44 @@ $result_num_options[] = array('20', '20');
 $result_num_options[] = array('30', '30');
 $result_num_options[] = array('40', '40');
 $result_num_options[] = array('40', '50');
-$form->addSelectList('opac_result_num', lang_sys_conf_form_field_opac_result, $result_num_options, $sysconf['opac_result_num'] );
+$form->addSelectList('opac_result_num', __('Number Of Collections To Show In OPAC Result List'), $result_num_options, $sysconf['opac_result_num'] );
 
 // homepage setting
 $promote_options[] = array('1', 'Yes');
-$form->addCheckBox('enable_promote_titles', lang_sys_conf_form_field_promote_titles, $promote_options, $sysconf['enable_promote_titles']?'1':'0');
+$form->addCheckBox('enable_promote_titles', __('Show Promoted Titles at Homepage'), $promote_options, $sysconf['enable_promote_titles']?'1':'0');
 
 // enable quick return
 $options = null;
-$options[] = array('0', lang_sys_conf_form_option_disable);
-$options[] = array('1', lang_sys_conf_form_option_enable);
-$form->addSelectList('quick_return', lang_sys_conf_form_field_quick_return, $options, $sysconf['quick_return']?'1':'0');
+$options[] = array('0', __('Disable'));
+$options[] = array('1', __('Enable'));
+$form->addSelectList('quick_return', __('Quick Return'), $options, $sysconf['quick_return']?'1':'0');
 
 // enable loan limit overriden
 $options = null;
-$options[] = array('0', lang_sys_conf_form_option_disable);
-$options[] = array('1', lang_sys_conf_form_option_enable);
-$form->addSelectList('loan_limit_override', lang_sys_conf_form_field_limit_overide, $options, $sysconf['loan_limit_override']?'1':'0');
+$options[] = array('0', __('Disable'));
+$options[] = array('1', __('Enable'));
+$form->addSelectList('loan_limit_override', __('Loan Limit Override'), $options, $sysconf['loan_limit_override']?'1':'0');
 
 // enable bibliography xml detail
 $options = null;
-$options[] = array('0', lang_sys_conf_form_option_disable);
-$options[] = array('1', lang_sys_conf_form_option_enable);
-$form->addSelectList('enable_xml_detail', lang_sys_conf_form_field_opac_xml, $options, $sysconf['enable_xml_detail']?'1':'0');
+$options[] = array('0', __('Disable'));
+$options[] = array('1', __('Enable'));
+$form->addSelectList('enable_xml_detail', __('OPAC XML Detail'), $options, $sysconf['enable_xml_detail']?'1':'0');
 
 // enable bibliography xml result set
 $options = null;
-$options[] = array('0', lang_sys_conf_form_option_disable);
-$options[] = array('1', lang_sys_conf_form_option_enable);
-$form->addSelectList('enable_xml_result', lang_sys_conf_form_field_xml_result, $options, $sysconf['enable_xml_result']?'1':'0');
+$options[] = array('0', __('Disable'));
+$options[] = array('1', __('Enable'));
+$form->addSelectList('enable_xml_result', __('OPAC XML Result'), $options, $sysconf['enable_xml_result']?'1':'0');
 
 // allow file attachment download
 $options = null;
-$options[] = array('0', lang_sys_conf_form_option_forbid);
-$options[] = array('1', lang_sys_conf_form_option_allow);
-$form->addSelectList('allow_file_download', lang_sys_conf_form_field_xml_file, $options, $sysconf['allow_file_download']?'1':'0');
+$options[] = array('0', __('Forbid'));
+$options[] = array('1', __('Allow'));
+$form->addSelectList('allow_file_download', __('Allow OPAC File Download'), $options, $sysconf['allow_file_download']?'1':'0');
 
 // session timeout
-$form->addTextField('text', 'session_timeout', lang_sys_conf_form_field_session, $sysconf['session_timeout'], 'style="width: 10%;"');
+$form->addTextField('text', 'session_timeout', __('Session Login Timeout'), $sysconf['session_timeout'], 'style="width: 10%;"');
 
 // print out the object
 echo $form->printOut();

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,6 @@
 
 /* Serial control module submenu items */
 
-$menu[] = array('Header', lang_mod_serial);
-$menu[] = array(lang_mod_serial_subscription, MODULES_WEB_ROOT_DIR.'serial_control/index.php', lang_mod_serial_subscription_titletag);
+$menu[] = array('Header', __('Serial Control'));
+$menu[] = array(__('Subscription'), MODULES_WEB_ROOT_DIR.'serial_control/index.php', __('Manage Subscription'));
 ?>

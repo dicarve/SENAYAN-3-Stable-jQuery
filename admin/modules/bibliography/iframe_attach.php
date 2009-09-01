@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2007,2008  Arie Nugraha (dicarve@yahoo.com)
+ * Copyright (C) 2009  Arie Nugraha (dicarve@yahoo.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ if (isset($_GET['removesess'])) {
     // remove session array
     unset($_SESSION['biblioAttach'][$idx]);
     echo '<script type="text/javascript">';
-    echo 'alert(\''.lang_mod_biblio_attach_alert_removed.'\');';
+    echo 'alert(\''.__('Attachment removed!').'\');';
     echo 'location.href = \'iframe_attach.php\';';
     echo '</script>';
 }
